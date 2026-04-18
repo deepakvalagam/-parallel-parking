@@ -3,653 +3,521 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parallel Parking Trainer</title>
+  <title>Parallel Parking Routine</title>
   <style>
     :root {
-      --bg: #0f172a;
+      --bg: #0b1220;
       --panel: #111827;
-      --panel-2: #1f2937;
+      --panel2: #1f2937;
       --text: #e5e7eb;
       --muted: #9ca3af;
+      --line: #334155;
       --accent: #38bdf8;
-      --accent-2: #22c55e;
+      --good: #22c55e;
       --warn: #f59e0b;
       --danger: #ef4444;
-      --line: #334155;
     }
-
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
       color: var(--text);
+      background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
     }
-
     .app {
       display: grid;
-      grid-template-columns: 380px 1fr;
+      grid-template-columns: 390px 1fr;
       min-height: 100vh;
     }
-
     .sidebar {
-      background: rgba(17, 24, 39, 0.96);
+      padding: 20px;
+      background: rgba(17,24,39,.96);
       border-right: 1px solid var(--line);
-      padding: 22px;
       overflow: auto;
     }
-
-    .main {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    h1 {
-      font-size: 1.5rem;
-      margin: 0 0 8px 0;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-
-    .controls, .panel {
-      background: rgba(31, 41, 55, 0.9);
+    .main { min-width: 0; }
+    h1 { margin: 0 0 8px; font-size: 1.55rem; }
+    .subtitle { color: var(--muted); line-height: 1.45; margin-bottom: 18px; }
+    .card {
+      background: rgba(31,41,55,.9);
       border: 1px solid var(--line);
       border-radius: 16px;
       padding: 16px;
       margin-bottom: 16px;
     }
-
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
-
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
     button {
-      appearance: none;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
+      border: 0;
       cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 700;
       background: var(--accent);
       color: #082f49;
-      font-weight: 700;
     }
-
-    button.secondary {
-      background: #334155;
-      color: var(--text);
-    }
-
-    button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    .mode-toggle {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .mode-toggle button.active {
-      outline: 2px solid white;
-    }
-
+    button.secondary { background: #334155; color: var(--text); }
+    button.active { outline: 2px solid white; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
     .step-badge {
       display: inline-block;
       padding: 6px 10px;
       border-radius: 999px;
-      background: rgba(56, 189, 248, 0.16);
       color: var(--accent);
+      background: rgba(56,189,248,.14);
       font-weight: 700;
       margin-bottom: 12px;
-      font-size: 0.9rem;
     }
-
-    .step-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .step-text {
-      color: var(--text);
-      line-height: 1.55;
-      margin-bottom: 14px;
-    }
-
-    .vrp {
-      border-left: 4px solid var(--warn);
-      background: rgba(245, 158, 11, 0.1);
+    .title { font-size: 1.15rem; font-weight: 800; margin-bottom: 10px; }
+    .section { margin-bottom: 12px; line-height: 1.5; }
+    .label { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+    .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .meta > div { padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(2,6,23,.35); }
+    .cue {
+      display: none;
+      margin-top: 12px;
       padding: 12px;
+      border-left: 4px solid var(--warn);
       border-radius: 10px;
+      background: rgba(245,158,11,.10);
       color: #fde68a;
       line-height: 1.45;
     }
-
-    .meta {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .meta-card {
-      background: rgba(2, 6, 23, 0.45);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px;
-    }
-
-    .meta-label {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 4px;
-      letter-spacing: 0.04em;
-    }
-
-    .meta-value {
-      font-weight: 700;
-    }
-
-    .progress-wrap {
-      margin-top: 14px;
-    }
-
-    .progress {
-      width: 100%;
-      height: 10px;
-      border-radius: 999px;
-      background: #1e293b;
-      overflow: hidden;
-      border: 1px solid #334155;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      transition: width 0.35s ease;
-    }
-
-    .canvas-wrap {
-      position: relative;
-      padding: 20px;
-      flex: 1;
-      min-height: 60vh;
-    }
-
-    canvas {
-      width: 100%;
-      height: calc(100vh - 40px);
-      max-height: 900px;
-      background: linear-gradient(180deg, #475569 0%, #334155 100%);
-      border-left: 1px solid var(--line);
-      display: block;
-      border-radius: 0;
-    }
-
-    .legend {
-      position: absolute;
-      right: 32px;
-      top: 32px;
-      background: rgba(15, 23, 42, 0.82);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-size: 0.9rem;
-      backdrop-filter: blur(6px);
-    }
-
-    .legend div { margin: 6px 0; }
-    .dot {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin-right: 8px;
-    }
-
-    .footer-note {
-      color: var(--muted);
-      font-size: 0.85rem;
+    .mistake {
       margin-top: 12px;
+      padding: 12px;
+      border-left: 4px solid var(--danger);
+      border-radius: 10px;
+      background: rgba(239,68,68,.10);
+      color: #fecaca;
       line-height: 1.45;
     }
-
+    .progress { margin-top: 14px; height: 10px; background: #1e293b; border-radius: 999px; overflow: hidden; border: 1px solid var(--line); }
+    .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--good)); transition: width .25s ease; }
+    .note { color: var(--muted); font-size: .86rem; line-height: 1.45; margin-top: 12px; }
+    .canvasWrap { position: relative; padding: 18px; }
+    canvas { display: block; width: 100%; height: calc(100vh - 36px); max-height: 900px; background: linear-gradient(180deg, #475569 0%, #334155 100%); }
+    .legend {
+      position: absolute; top: 28px; right: 28px; background: rgba(15,23,42,.85); border: 1px solid var(--line); border-radius: 14px;
+      padding: 12px 14px; backdrop-filter: blur(4px); font-size: .92rem;
+    }
+    .legend div { margin: 6px 0; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
     @media (max-width: 980px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        border-right: none;
-        border-bottom: 1px solid var(--line);
-      }
-      canvas {
-        height: 62vh;
-      }
-      .legend {
-        position: static;
-        margin-top: 12px;
-      }
+      .app { grid-template-columns: 1fr; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+      canvas { height: 62vh; }
+      .legend { position: static; margin-top: 10px; }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <h1>Parallel Parking Trainer</h1>
-      <div class="subtitle">
-        A step-by-step visual walkthrough with steering actions and visual reference points (VRPs).
+<div class="app">
+  <aside class="sidebar">
+    <h1>Parallel Parking Routine</h1>
+    <div class="subtitle">Script-accurate step playback with VRP-0 to VRP-3 shown only where they belong.</div>
+
+    <div class="card">
+      <div><strong>Space mode</strong></div>
+      <div class="row" style="margin-top:10px;">
+        <button id="tightBtn" class="active">Tight space</button>
+        <button id="easyBtn" class="secondary">Easier / wider</button>
       </div>
-
-      <div class="controls">
-        <div><strong>Parking space mode</strong></div>
-        <div class="mode-toggle">
-          <button id="tightBtn" class="active">Tight space</button>
-          <button id="easyBtn" class="secondary">Easier space</button>
-        </div>
-        <div class="btn-row">
-          <button id="prevBtn" class="secondary">Previous</button>
-          <button id="playBtn">Play</button>
-          <button id="nextBtn" class="secondary">Next</button>
-          <button id="resetBtn" class="secondary">Reset</button>
-        </div>
-        <div class="progress-wrap">
-          <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
-        </div>
+      <div class="row" style="margin-top:12px;">
+        <button id="prevBtn" class="secondary">Previous</button>
+        <button id="playBtn">Play</button>
+        <button id="nextBtn" class="secondary">Next</button>
+        <button id="resetBtn" class="secondary">Reset</button>
       </div>
+      <div class="progress"><div id="bar" class="bar"></div></div>
+    </div>
 
-      <div class="panel">
-        <div class="step-badge" id="stepBadge">Step 1</div>
-        <div class="step-title" id="stepTitle"></div>
-        <div class="step-text" id="stepText"></div>
-        <div class="vrp" id="vrpBox" style="display:none"></div>
-        <div class="meta">
-          <div class="meta-card">
-            <div class="meta-label">Steering</div>
-            <div class="meta-value" id="steeringText"></div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Speed</div>
-            <div class="meta-value" id="speedText"></div>
-          </div>
-        </div>
-        <div class="footer-note">
-          Visual references are anchors, not separate actions. Use them to confirm timing while moving slowly.
-        </div>
+    <div class="card">
+      <div id="stepBadge" class="step-badge">Step 1</div>
+      <div id="stepTitle" class="title"></div>
+
+      <div class="section"><span class="label">Action</span><div id="actionText"></div></div>
+      <div class="section"><span class="label">Goal</span><div id="goalText"></div></div>
+      <div class="section"><span class="label">Visual cue</span><div id="visualText"></div></div>
+      <div class="meta">
+        <div><div class="label">Steering</div><div id="steeringText"></div></div>
+        <div><div class="label">Distance / gear / speed</div><div id="extraText"></div></div>
       </div>
-    </aside>
+      <div id="cueBox" class="cue"></div>
+      <div id="mistakeBox" class="mistake"></div>
+      <div class="note">The sequence below follows the source script exactly: indicate, position, reverse gear, 360° check, right turn, straight back, left turn, straighten, adjust, finalize.</div>
+    </div>
+  </aside>
 
-    <main class="main">
-      <div class="canvas-wrap">
-        <canvas id="scene" width="1200" height="820"></canvas>
-        <div class="legend">
-          <div><span class="dot" style="background:#22c55e"></span>Your car</div>
-          <div><span class="dot" style="background:#94a3b8"></span>Parked cars</div>
-          <div><span class="dot" style="background:#38bdf8"></span>Target path</div>
-          <div><span class="dot" style="background:#f59e0b"></span>VRP highlight</div>
-        </div>
+  <main class="main">
+    <div class="canvasWrap">
+      <canvas id="scene" width="1200" height="820"></canvas>
+      <div class="legend">
+        <div><span class="dot" style="background:#22c55e"></span>Your car</div>
+        <div><span class="dot" style="background:#94a3b8"></span>Parked / front obstacle</div>
+        <div><span class="dot" style="background:#38bdf8"></span>Path</div>
+        <div><span class="dot" style="background:#f59e0b"></span>VRP active</div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
+</div>
 
-  <script>
-    const steps = [
-      {
-        title: 'Initial positioning',
-        text: 'Stop parallel to the obstacle with about 0.5 m lateral distance. If there is a normal car in front, align your side mirror with theirs. If the object is larger, smaller, or just a tree or curb, align the back of your car with the edge of the obstacle.',
-        steeringTight: 'Straight',
-        steeringEasy: 'Straight',
-        speed: 'Stopped',
-        vrp: 'VRP: Initial alignment. Side mirror aligned to the front car’s side mirror, or your rear aligned to the obstacle edge when the front object is irregular.',
-        car: { x: 430, y: 235, angle: 0 }
-      },
-      {
-        title: 'Reverse straight slowly',
-        text: 'Release the brake and begin reversing slowly while keeping the wheel straight. Stay calm and let the car move without rushing the steering.',
-        steeringTight: 'Straight',
-        steeringEasy: 'Straight',
-        speed: 'Very slow reverse',
-        vrp: '',
-        car: { x: 400, y: 245, angle: 0 }
-      },
-      {
-        title: 'Begin first turn in',
-        text: 'Start the first steering input as you reverse into the space. In tight spaces, go full right. In easier spaces, apply right lock more gradually.',
-        steeringTight: 'Full right',
-        steeringEasy: 'Gradual right',
-        speed: 'Very slow reverse',
-        vrp: '',
-        car: { x: 365, y: 275, angle: -0.32 }
-      },
-      {
-        title: 'Use rear-side visual anchor',
-        text: 'Keep reversing on the first arc and watch your driver-side mirror for the rear reference. This tells you when the car has rotated enough to prepare for transition.',
-        steeringTight: 'Hold right lock',
-        steeringEasy: 'Hold gentle right',
-        speed: 'Very slow reverse',
-        vrp: 'VRP: When you can see roughly the middle of the rear car’s number plate in your driver-side mirror, you have reached the key reference point.',
-        car: { x: 332, y: 328, angle: -0.63 }
-      },
-      {
-        title: 'Unwind and prepare to approach curb',
-        text: 'As you pass the first reference point, begin unwinding the wheel and continue rolling back. The car should now be entering the pocket with the rear moving toward the curb.',
-        steeringTight: 'Return toward straight',
-        steeringEasy: 'Return toward straight',
-        speed: 'Very slow reverse',
-        vrp: '',
-        car: { x: 316, y: 398, angle: -0.72 }
-      },
-      {
-        title: 'Set curb distance using passenger mirror',
-        text: 'Look down in the passenger mirror to judge your final curb gap. This is the point that defines how close you will end up to the curb, because after this you will not move closer to it.',
-        steeringTight: 'Near straight',
-        steeringEasy: 'Near straight',
-        speed: 'Creeping reverse',
-        vrp: 'VRP: In the passenger mirror facing downward, align the rear door handle with the curb. That sets your final curb distance.',
-        car: { x: 314, y: 458, angle: -0.7 }
-      },
-      {
-        title: 'Second steering input to tuck the front in',
-        text: 'Once curb distance is set, steer left to bring the front of the car into the space. In tight spaces go full left. In easier spaces be gentler.',
-        steeringTight: 'Full left',
-        steeringEasy: 'Gentle left',
-        speed: 'Very slow reverse',
-        vrp: '',
-        car: { x: 338, y: 540, angle: -0.28 }
-      },
-      {
-        title: 'Finish and straighten',
-        text: 'As the car becomes parallel with the curb, straighten the wheel and stop. Adjust forward or backward if needed so you are centered within the space.',
-        steeringTight: 'Straighten',
-        steeringEasy: 'Straighten',
-        speed: 'Stop',
-        vrp: 'VRP: Final check. Car is parallel to the curb with safe gaps in front and behind.',
-        car: { x: 405, y: 572, angle: 0.03 }
-      }
-    ];
+<script>
+const steps = [
+  {
+    title: 'Indicate',
+    action: 'Turn on right indicator.',
+    goal: 'Signal intent to park.',
+    visualCue: 'Indicator active.',
+    steeringTight: 'Straight',
+    steeringEasy: 'Straight',
+    extra: 'Stationary',
+    mistake: 'Signaling too late or not at all.',
+    vrp: '',
+    car: {x: 430, y: 170, angle: 0},
+    signal: true
+  },
+  {
+    title: 'Position Next to Car',
+    action: 'Align your car parallel to the front obstacle.',
+    goal: 'Correct and repeatable starting position.',
+    visualCue: 'Normal car: align your side mirror with the other car’s side mirror. Larger/smaller obstacle: align the rear of your car with the edge of the obstacle.',
+    steeringTight: 'Straight',
+    steeringEasy: 'Straight',
+    extra: '~0.5 m gap from obstacle',
+    mistake: 'Incorrect alignment or inconsistent distance from the obstacle.',
+    vrp: 'VRP-0 - Starting Alignment: Side mirror aligned with front car’s mirror OR rear aligned with obstacle edge. Meaning: correct starting position achieved.',
+    car: {x: 430, y: 250, angle: 0},
+    signal: true
+  },
+  {
+    title: 'Shift to Reverse',
+    action: 'Engage reverse gear (R).',
+    goal: 'Prepare to start maneuver.',
+    visualCue: 'Reverse gear engaged, surroundings checked.',
+    steeringTight: 'Straight',
+    steeringEasy: 'Straight',
+    extra: 'Gear: R',
+    mistake: 'Rushing without proper checks.',
+    vrp: '',
+    car: {x: 430, y: 250, angle: 0},
+    signal: true
+  },
+  {
+    title: '360° Check',
+    action: 'Check mirrors, blind spots, surroundings.',
+    goal: 'Ensure safety before moving.',
+    visualCue: 'Clear path around vehicle.',
+    steeringTight: 'Straight',
+    steeringEasy: 'Straight',
+    extra: 'Observation only',
+    mistake: 'Skipping full observation.',
+    vrp: '',
+    car: {x: 430, y: 250, angle: 0},
+    signal: true
+  },
+  {
+    title: 'Reverse + Steer Right',
+    action: 'Begin reversing slowly and turn steering wheel right.',
+    goal: 'Angle rear of car into parking space.',
+    visualCue: 'Rear of car moves toward curb.',
+    steeringTight: 'Turn right fully (full lock)',
+    steeringEasy: 'Turn right more gradually',
+    extra: 'Very slow reverse',
+    mistake: 'Turning too early or too sharply.',
+    vrp: 'VRP-1 - End of Right Turn (Angle Set): The middle of the rear car’s number plate becomes visible in your driver-side mirror. If no car: use parking line or curb alignment as substitute. Meaning: correct entry angle reached - prepare to straighten wheels.',
+    car: {x: 350, y: 345, angle: -0.64},
+    signal: true
+  },
+  {
+    title: 'Straight Back',
+    action: 'Straighten wheels and continue reversing straight.',
+    goal: 'Define final distance to the curb.',
+    visualCue: 'In the passenger-side mirror angled downward, align the rear door handle with the curb.',
+    steeringTight: 'Wheels straight',
+    steeringEasy: 'Wheels straight',
+    extra: 'Very slow reverse',
+    mistake: 'Skipping this step; beginning left turn too early.',
+    vrp: 'VRP-2 - Curb Distance Lock: Rear door handle aligns with the curb in the passenger mirror. Meaning: final curb distance is set.',
+    car: {x: 314, y: 468, angle: -0.64},
+    signal: true
+  },
+  {
+    title: 'Turn Left to Parallel',
+    action: 'Turn steering wheel left while reversing.',
+    goal: 'Bring car into parallel alignment.',
+    visualCue: 'Car body aligns parallel; front clears the car ahead.',
+    steeringTight: 'Turn left fully (full lock)',
+    steeringEasy: 'Turn left more gradually',
+    extra: 'Very slow reverse',
+    mistake: 'Turning too late: rear hits curb. Turning too early: wide angle.',
+    vrp: 'VRP-3 - Parallel Alignment: Car body appears parallel to the curb; front clears the car ahead. Meaning: ready to center steering and finalize position.',
+    car: {x: 370, y: 560, angle: -0.18},
+    signal: true
+  },
+  {
+    title: 'Straighten Car',
+    action: 'Center steering as car becomes parallel.',
+    goal: 'Final alignment within the space.',
+    visualCue: 'Car straight, parallel to curb.',
+    steeringTight: 'Center steering',
+    steeringEasy: 'Center steering',
+    extra: 'Slow finishing movement',
+    mistake: 'Over- or under-correcting leading to angle.',
+    vrp: '',
+    car: {x: 405, y: 575, angle: 0.02},
+    signal: true
+  },
+  {
+    title: 'Adjust Position',
+    action: 'Move forward/backward if needed.',
+    goal: 'Center car between front and rear obstacles.',
+    visualCue: 'Balanced spacing front and back.',
+    steeringTight: 'As needed',
+    steeringEasy: 'As needed',
+    extra: 'Small forward/back corrections',
+    mistake: 'Skipping adjustment.',
+    vrp: '',
+    car: {x: 405, y: 545, angle: 0.02},
+    signal: false
+  },
+  {
+    title: 'Finalize',
+    action: 'Shift to park (P), secure vehicle.',
+    goal: 'Complete maneuver.',
+    visualCue: 'Car safely parked.',
+    steeringTight: 'Centered',
+    steeringEasy: 'Centered',
+    extra: 'Gear: P',
+    mistake: 'Forgetting to secure vehicle.',
+    vrp: '',
+    car: {x: 405, y: 545, angle: 0.02},
+    signal: false
+  }
+];
 
-    const canvas = document.getElementById('scene');
-    const ctx = canvas.getContext('2d');
+const canvas = document.getElementById('scene');
+const ctx = canvas.getContext('2d');
+const stepBadge = document.getElementById('stepBadge');
+const stepTitle = document.getElementById('stepTitle');
+const actionText = document.getElementById('actionText');
+const goalText = document.getElementById('goalText');
+const visualText = document.getElementById('visualText');
+const steeringText = document.getElementById('steeringText');
+const extraText = document.getElementById('extraText');
+const cueBox = document.getElementById('cueBox');
+const mistakeBox = document.getElementById('mistakeBox');
+const bar = document.getElementById('bar');
+const playBtn = document.getElementById('playBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const resetBtn = document.getElementById('resetBtn');
+const tightBtn = document.getElementById('tightBtn');
+const easyBtn = document.getElementById('easyBtn');
 
-    const stepBadge = document.getElementById('stepBadge');
-    const stepTitle = document.getElementById('stepTitle');
-    const stepText = document.getElementById('stepText');
-    const vrpBox = document.getElementById('vrpBox');
-    const steeringText = document.getElementById('steeringText');
-    const speedText = document.getElementById('speedText');
-    const progressBar = document.getElementById('progressBar');
+let currentStep = 0;
+let mode = 'tight';
+let playing = false;
+let timer = null;
 
-    const prevBtn = document.getElementById('prevBtn');
-    const playBtn = document.getElementById('playBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const tightBtn = document.getElementById('tightBtn');
-    const easyBtn = document.getElementById('easyBtn');
+const curbX = 210;
+const frontObstacle = {x: 430, y: 110, width: 82, length: 185};
+const rearCar = {x: 430, y: 690, width: 82, length: 185};
+const carGeom = {width: 78, length: 180};
 
-    let currentStep = 0;
-    let playing = false;
-    let mode = 'tight';
-    let timer = null;
+function updateUI() {
+  const s = steps[currentStep];
+  stepBadge.textContent = `Step ${currentStep + 1}`;
+  stepTitle.textContent = s.title;
+  actionText.textContent = s.action;
+  goalText.textContent = s.goal;
+  visualText.textContent = s.visualCue;
+  steeringText.textContent = mode === 'tight' ? s.steeringTight : s.steeringEasy;
+  extraText.textContent = s.extra;
+  mistakeBox.textContent = `Common mistake: ${s.mistake}`;
+  if (s.vrp) {
+    cueBox.style.display = 'block';
+    cueBox.textContent = s.vrp;
+  } else {
+    cueBox.style.display = 'none';
+  }
+  bar.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
+  prevBtn.disabled = currentStep === 0;
+  nextBtn.disabled = currentStep === steps.length - 1;
+  playBtn.textContent = playing ? 'Pause' : 'Play';
+  draw();
+}
 
-    const carGeom = { length: 180, width: 78 };
-    const frontParked = { x: 430, y: 110, length: 185, width: 82 };
-    const rearParked = { x: 430, y: 690, length: 185, width: 82 };
-    const curbX = 210;
+function roundRect(x, y, w, h, r, fill = true) {
+  let rr = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x, y + h, rr);
+  ctx.arcTo(x, y + h, x, y, rr);
+  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.closePath();
+  if (fill) ctx.fill(); else ctx.stroke();
+}
 
-    function updateUI() {
-      const s = steps[currentStep];
-      stepBadge.textContent = `Step ${currentStep + 1}`;
-      stepTitle.textContent = s.title;
-      stepText.textContent = s.text;
-      steeringText.textContent = mode === 'tight' ? s.steeringTight : s.steeringEasy;
-      speedText.textContent = s.speed;
-      if (s.vrp) {
-        vrpBox.style.display = 'block';
-        vrpBox.textContent = s.vrp;
-      } else {
-        vrpBox.style.display = 'none';
-      }
-      progressBar.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
-      prevBtn.disabled = currentStep === 0;
-      nextBtn.disabled = currentStep === steps.length - 1;
-      playBtn.textContent = playing ? 'Pause' : 'Play';
-      draw();
-    }
+function drawRoad() {
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#64748b';
+  ctx.fillRect(0, 0, curbX, canvas.height);
+  ctx.strokeStyle = '#e5e7eb';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(curbX, 0);
+  ctx.lineTo(curbX, canvas.height);
+  ctx.stroke();
+  ctx.setLineDash([16, 14]);
+  ctx.strokeStyle = 'rgba(255,255,255,.18)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(760, 0);
+  ctx.lineTo(760, canvas.height);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
 
-    function drawRoad() {
-      ctx.fillStyle = '#475569';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+function drawSpaceGuides() {
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,.18)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([10,10]);
+  ctx.strokeRect(250, 220, 180, 380);
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(255,255,255,.7)';
+  ctx.font = '15px sans-serif';
+  ctx.fillText('Target parking space', 255, 212);
+  ctx.restore();
+}
 
-      ctx.fillStyle = '#64748b';
-      ctx.fillRect(0, 0, curbX, canvas.height);
+function drawParked(car) {
+  ctx.save();
+  ctx.translate(car.x, car.y);
+  ctx.fillStyle = '#94a3b8';
+  roundRect(-car.width/2, -car.length/2, car.width, car.length, 14, true);
+  ctx.fillStyle = '#cbd5e1';
+  roundRect(-car.width/2 + 8, -car.length/2 + 18, car.width - 16, car.length - 36, 10, true);
+  ctx.restore();
+}
 
-      ctx.strokeStyle = '#e5e7eb';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(curbX, 0);
-      ctx.lineTo(curbX, canvas.height);
-      ctx.stroke();
+function drawPath() {
+  ctx.save();
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  steps.forEach((s, i) => i ? ctx.lineTo(s.car.x, s.car.y) : ctx.moveTo(s.car.x, s.car.y));
+  ctx.stroke();
+  for (let i = 0; i <= currentStep; i++) {
+    ctx.fillStyle = i === currentStep ? '#22c55e' : '#7dd3fc';
+    ctx.beginPath();
+    ctx.arc(steps[i].car.x, steps[i].car.y, i === currentStep ? 8 : 5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
 
-      ctx.setLineDash([16, 14]);
-      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(760, 0);
-      ctx.lineTo(760, canvas.height);
-      ctx.stroke();
-      ctx.setLineDash([]);
-    }
+function drawOurCar(car, signalOn) {
+  ctx.save();
+  ctx.translate(car.x, car.y);
+  ctx.rotate(car.angle);
+  ctx.fillStyle = '#22c55e';
+  roundRect(-carGeom.width/2, -carGeom.length/2, carGeom.width, carGeom.length, 16, true);
+  ctx.fillStyle = '#bbf7d0';
+  roundRect(-carGeom.width/2 + 8, -carGeom.length/2 + 22, carGeom.width - 16, carGeom.length - 44, 10, true);
+  ctx.fillStyle = '#0f172a';
+  [[-carGeom.width/2 - 2, -52],[carGeom.width/2 - 8, -52],[-carGeom.width/2 - 2, 24],[carGeom.width/2 - 8, 24]].forEach(([x,y]) => ctx.fillRect(x,y,10,28));
+  if (signalOn) {
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(carGeom.width/2 - 6, -carGeom.length/2 + 14, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(carGeom.width/2 - 6, carGeom.length/2 - 14, 6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
 
-    function drawParkedCar(car) {
-      ctx.save();
-      ctx.translate(car.x, car.y);
-      ctx.fillStyle = '#94a3b8';
-      roundRect(ctx, -car.width / 2, -car.length / 2, car.width, car.length, 14, true, false);
-      ctx.fillStyle = '#cbd5e1';
-      roundRect(ctx, -car.width / 2 + 8, -car.length / 2 + 18, car.width - 16, car.length - 36, 10, true, false);
-      ctx.restore();
-    }
+function label(text, x, y) {
+  ctx.save();
+  ctx.font = '16px sans-serif';
+  const w = Math.min(470, ctx.measureText(text).width + 24);
+  ctx.fillStyle = 'rgba(15,23,42,.92)';
+  roundRect(x - 10, y - 22, w, 32, 10, true);
+  ctx.fillStyle = '#fde68a';
+  ctx.fillText(text, x, y);
+  ctx.restore();
+}
 
-    function drawPath() {
-      ctx.save();
-      ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      steps.forEach((s, i) => {
-        if (i === 0) ctx.moveTo(s.car.x, s.car.y);
-        else ctx.lineTo(s.car.x, s.car.y);
-      });
-      ctx.stroke();
+function drawVRP() {
+  ctx.save();
+  ctx.strokeStyle = '#f59e0b';
+  ctx.fillStyle = 'rgba(245,158,11,.16)';
+  ctx.lineWidth = 4;
 
-      for (let i = 0; i <= currentStep; i++) {
-        ctx.fillStyle = i === currentStep ? '#22c55e' : '#7dd3fc';
-        ctx.beginPath();
-        ctx.arc(steps[i].car.x, steps[i].car.y, i === currentStep ? 8 : 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    }
+  if (currentStep === 1) {
+    ctx.strokeRect(470, 155, 120, 44);
+    label('VRP-0: starting alignment', 610, 180);
+  }
+  if (currentStep === 4) {
+    ctx.beginPath();
+    ctx.arc(430, 610, 34, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    label('VRP-1: middle of rear number plate in driver mirror', 585, 610);
+  }
+  if (currentStep === 5) {
+    ctx.beginPath();
+    ctx.moveTo(212, 470);
+    ctx.lineTo(302, 470);
+    ctx.stroke();
+    label('VRP-2: rear door handle aligned with curb', 585, 470);
+  }
+  if (currentStep === 6) {
+    ctx.strokeRect(248, 500, 330, 145);
+    label('VRP-3: body parallel, front clears car ahead', 585, 520);
+  }
+  ctx.restore();
+}
 
-    function drawCar(x, y, angle) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(angle);
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawRoad();
+  drawSpaceGuides();
+  drawParked(frontObstacle);
+  drawParked(rearCar);
+  drawPath();
+  drawOurCar(steps[currentStep].car, steps[currentStep].signal);
+  drawVRP();
+}
 
-      ctx.fillStyle = '#22c55e';
-      roundRect(ctx, -carGeom.width / 2, -carGeom.length / 2, carGeom.width, carGeom.length, 16, true, false);
-
-      ctx.fillStyle = '#bbf7d0';
-      roundRect(ctx, -carGeom.width / 2 + 8, -carGeom.length / 2 + 22, carGeom.width - 16, carGeom.length - 44, 10, true, false);
-
-      ctx.fillStyle = '#0f172a';
-      const wheelW = 10, wheelH = 28;
-      [[-carGeom.width/2 - 2, -52], [carGeom.width/2 - 8, -52], [-carGeom.width/2 - 2, 24], [carGeom.width/2 - 8, 24]].forEach(([wx, wy]) => {
-        ctx.fillRect(wx, wy, wheelW, wheelH);
-      });
-
-      ctx.strokeStyle = '#052e16';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(0, -carGeom.length / 2 + 18);
-      ctx.lineTo(0, carGeom.length / 2 - 18);
-      ctx.stroke();
-
-      ctx.restore();
-    }
-
-    function drawVRPHighlights() {
-      const s = steps[currentStep];
-      ctx.save();
-      ctx.strokeStyle = '#f59e0b';
-      ctx.fillStyle = 'rgba(245, 158, 11, 0.16)';
-      ctx.lineWidth = 4;
-
-      if (currentStep === 0) {
-        ctx.strokeRect(470, 155, 120, 44);
-        label('Initial mirror alignment', 600, 180);
-      }
-      if (currentStep === 3) {
-        ctx.beginPath();
-        ctx.arc(430, 610, 34, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        label('Middle of rear number plate in driver mirror', 610, 610);
-      }
-      if (currentStep === 5) {
-        ctx.beginPath();
-        ctx.moveTo(212, 470);
-        ctx.lineTo(300, 470);
-        ctx.stroke();
-        label('Rear door handle aligned to curb in passenger mirror', 580, 470);
-      }
-      if (currentStep === 7) {
-        ctx.strokeRect(248, 500, 330, 145);
-        label('Final parallel check', 650, 520);
-      }
-      ctx.restore();
-    }
-
-    function label(text, x, y) {
-      ctx.fillStyle = 'rgba(15,23,42,0.9)';
-      roundRect(ctx, x - 10, y - 22, Math.min(420, ctx.measureText(text).width + 24), 32, 10, true, false);
-      ctx.fillStyle = '#fde68a';
-      ctx.font = '16px sans-serif';
-      ctx.fillText(text, x, y);
-    }
-
-    function drawSpaceGuides() {
-      ctx.save();
-      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([10, 10]);
-      ctx.strokeRect(250, 220, 180, 380);
-      ctx.setLineDash([]);
-      ctx.fillStyle = 'rgba(255,255,255,0.65)';
-      ctx.font = '15px sans-serif';
-      ctx.fillText('Target parking space', 255, 212);
-      ctx.restore();
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawRoad();
-      drawSpaceGuides();
-      drawParkedCar(frontParked);
-      drawParkedCar(rearParked);
-      drawPath();
-      const s = steps[currentStep];
-      drawCar(s.car.x, s.car.y, s.car.angle);
-      drawVRPHighlights();
-    }
-
-    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-      let r = radius;
-      if (width < 2 * r) r = width / 2;
-      if (height < 2 * r) r = height / 2;
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.arcTo(x + width, y, x + width, y + height, r);
-      ctx.arcTo(x + width, y + height, x, y + height, r);
-      ctx.arcTo(x, y + height, x, y, r);
-      ctx.arcTo(x, y, x + width, y, r);
-      ctx.closePath();
-      if (fill) ctx.fill();
-      if (stroke) ctx.stroke();
-    }
-
-    function nextStep() {
-      if (currentStep < steps.length - 1) {
-        currentStep += 1;
-      } else {
-        stopPlaying();
-      }
-      updateUI();
-    }
-
-    function prevStep() {
-      if (currentStep > 0) currentStep -= 1;
-      updateUI();
-    }
-
-    function play() {
-      if (playing) {
-        stopPlaying();
-        return;
-      }
-      playing = true;
-      playBtn.textContent = 'Pause';
-      timer = setInterval(() => {
-        if (currentStep >= steps.length - 1) {
-          stopPlaying();
-          return;
-        }
-        currentStep += 1;
-        updateUI();
-      }, 2200);
-      updateUI();
-    }
-
-    function stopPlaying() {
-      playing = false;
-      clearInterval(timer);
-      timer = null;
-      playBtn.textContent = 'Play';
-    }
-
-    prevBtn.addEventListener('click', () => { stopPlaying(); prevStep(); });
-    nextBtn.addEventListener('click', () => { stopPlaying(); nextStep(); });
-    playBtn.addEventListener('click', play);
-    resetBtn.addEventListener('click', () => { stopPlaying(); currentStep = 0; updateUI(); });
-
-    tightBtn.addEventListener('click', () => {
-      mode = 'tight';
-      tightBtn.classList.add('active');
-      easyBtn.classList.remove('active');
-      easyBtn.classList.add('secondary');
-      tightBtn.classList.remove('secondary');
-      updateUI();
-    });
-
-    easyBtn.addEventListener('click', () => {
-      mode = 'easy';
-      easyBtn.classList.add('active');
-      tightBtn.classList.remove('active');
-      tightBtn.classList.add('secondary');
-      easyBtn.classList.remove('secondary');
-      updateUI();
-    });
-
+function stopPlay() {
+  playing = false;
+  clearInterval(timer);
+  timer = null;
+  playBtn.textContent = 'Play';
+}
+function playToggle() {
+  if (playing) return stopPlay();
+  playing = true;
+  playBtn.textContent = 'Pause';
+  timer = setInterval(() => {
+    if (currentStep >= steps.length - 1) return stopPlay();
+    currentStep += 1;
     updateUI();
-  </script>
+  }, 2300);
+}
+prevBtn.addEventListener('click', () => { stopPlay(); if (currentStep > 0) currentStep--; updateUI(); });
+nextBtn.addEventListener('click', () => { stopPlay(); if (currentStep < steps.length - 1) currentStep++; updateUI(); });
+resetBtn.addEventListener('click', () => { stopPlay(); currentStep = 0; updateUI(); });
+playBtn.addEventListener('click', playToggle);
+tightBtn.addEventListener('click', () => { mode = 'tight'; tightBtn.classList.add('active'); easyBtn.classList.remove('active'); tightBtn.classList.remove('secondary'); easyBtn.classList.add('secondary'); updateUI(); });
+easyBtn.addEventListener('click', () => { mode = 'easy'; easyBtn.classList.add('active'); tightBtn.classList.remove('active'); easyBtn.classList.remove('secondary'); tightBtn.classList.add('secondary'); updateUI(); });
+
+updateUI();
+</script>
 </body>
 </html>
