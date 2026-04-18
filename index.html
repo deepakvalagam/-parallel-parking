@@ -24,82 +24,31 @@
       color: var(--text);
       background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
     }
-    .app {
-      display: grid;
-      grid-template-columns: 390px 1fr;
-      min-height: 100vh;
-    }
-    .sidebar {
-      padding: 20px;
-      background: rgba(17,24,39,.96);
-      border-right: 1px solid var(--line);
-      overflow: auto;
-    }
+    .app { display: grid; grid-template-columns: 390px 1fr; min-height: 100vh; }
+    .sidebar { padding: 20px; background: rgba(17,24,39,.96); border-right: 1px solid var(--line); overflow: auto; }
     .main { min-width: 0; }
     h1 { margin: 0 0 8px; font-size: 1.55rem; }
     .subtitle { color: var(--muted); line-height: 1.45; margin-bottom: 18px; }
-    .card {
-      background: rgba(31,41,55,.9);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
+    .card { background: rgba(31,41,55,.9); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
     .row { display: flex; gap: 8px; flex-wrap: wrap; }
-    button {
-      border: 0;
-      cursor: pointer;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-weight: 700;
-      background: var(--accent);
-      color: #082f49;
-    }
+    button { border: 0; cursor: pointer; padding: 10px 14px; border-radius: 10px; font-weight: 700; background: var(--accent); color: #082f49; }
     button.secondary { background: #334155; color: var(--text); }
     button.active { outline: 2px solid white; }
     button:disabled { opacity: .5; cursor: not-allowed; }
-    .step-badge {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      color: var(--accent);
-      background: rgba(56,189,248,.14);
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
+    .step-badge { display: inline-block; padding: 6px 10px; border-radius: 999px; color: var(--accent); background: rgba(56,189,248,.14); font-weight: 700; margin-bottom: 12px; }
     .title { font-size: 1.15rem; font-weight: 800; margin-bottom: 10px; }
     .section { margin-bottom: 12px; line-height: 1.5; }
     .label { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
     .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
     .meta > div { padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(2,6,23,.35); }
-    .cue {
-      display: none;
-      margin-top: 12px;
-      padding: 12px;
-      border-left: 4px solid var(--warn);
-      border-radius: 10px;
-      background: rgba(245,158,11,.10);
-      color: #fde68a;
-      line-height: 1.45;
-    }
-    .mistake {
-      margin-top: 12px;
-      padding: 12px;
-      border-left: 4px solid var(--danger);
-      border-radius: 10px;
-      background: rgba(239,68,68,.10);
-      color: #fecaca;
-      line-height: 1.45;
-    }
+    .cue { display: none; margin-top: 12px; padding: 12px; border-left: 4px solid var(--warn); border-radius: 10px; background: rgba(245,158,11,.10); color: #fde68a; line-height: 1.45; }
+    .mistake { margin-top: 12px; padding: 12px; border-left: 4px solid var(--danger); border-radius: 10px; background: rgba(239,68,68,.10); color: #fecaca; line-height: 1.45; }
     .progress { margin-top: 14px; height: 10px; background: #1e293b; border-radius: 999px; overflow: hidden; border: 1px solid var(--line); }
     .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--good)); transition: width .25s ease; }
     .note { color: var(--muted); font-size: .86rem; line-height: 1.45; margin-top: 12px; }
     .canvasWrap { position: relative; padding: 18px; }
     canvas { display: block; width: 100%; height: calc(100vh - 36px); max-height: 900px; background: linear-gradient(180deg, #475569 0%, #334155 100%); }
-    .legend {
-      position: absolute; top: 28px; right: 28px; background: rgba(15,23,42,.85); border: 1px solid var(--line); border-radius: 14px;
-      padding: 12px 14px; backdrop-filter: blur(4px); font-size: .92rem;
-    }
+    .legend { position: absolute; top: 28px; right: 28px; background: rgba(15,23,42,.85); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; backdrop-filter: blur(4px); font-size: .92rem; }
     .legend div { margin: 6px 0; }
     .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
     @media (max-width: 980px) {
@@ -114,7 +63,7 @@
 <div class="app">
   <aside class="sidebar">
     <h1>Parallel Parking Routine</h1>
-    <div class="subtitle">Script-accurate step playback with VRP-0 to VRP-3 shown only where they belong.</div>
+    <div class="subtitle">Script-accurate step playback with corrected parking-space geometry.</div>
 
     <div class="card">
       <div><strong>Space mode</strong></div>
@@ -134,7 +83,6 @@
     <div class="card">
       <div id="stepBadge" class="step-badge">Step 1</div>
       <div id="stepTitle" class="title"></div>
-
       <div class="section"><span class="label">Action</span><div id="actionText"></div></div>
       <div class="section"><span class="label">Goal</span><div id="goalText"></div></div>
       <div class="section"><span class="label">Visual cue</span><div id="visualText"></div></div>
@@ -144,7 +92,7 @@
       </div>
       <div id="cueBox" class="cue"></div>
       <div id="mistakeBox" class="mistake"></div>
-      <div class="note">The sequence below follows the source script exactly: indicate, position, reverse gear, 360° check, right turn, straight back, left turn, straighten, adjust, finalize.</div>
+      <div class="note">Parking space is now shown correctly between the front and rear cars, with the final car ending centered in that gap.</div>
     </div>
   </aside>
 
@@ -153,7 +101,7 @@
       <canvas id="scene" width="1200" height="820"></canvas>
       <div class="legend">
         <div><span class="dot" style="background:#22c55e"></span>Your car</div>
-        <div><span class="dot" style="background:#94a3b8"></span>Parked / front obstacle</div>
+        <div><span class="dot" style="background:#94a3b8"></span>Front / rear parked cars</div>
         <div><span class="dot" style="background:#38bdf8"></span>Path</div>
         <div><span class="dot" style="background:#f59e0b"></span>VRP active</div>
       </div>
@@ -162,137 +110,21 @@
 </div>
 
 <script>
+const parkedFront = {x: 370, y: 120, width: 82, length: 185};
+const parkedRear = {x: 370, y: 690, width: 82, length: 185};
+const finalCenterY = 405;
+
 const steps = [
-  {
-    title: 'Indicate',
-    action: 'Turn on right indicator.',
-    goal: 'Signal intent to park.',
-    visualCue: 'Indicator active.',
-    steeringTight: 'Straight',
-    steeringEasy: 'Straight',
-    extra: 'Stationary',
-    mistake: 'Signaling too late or not at all.',
-    vrp: '',
-    car: {x: 430, y: 170, angle: 0},
-    signal: true
-  },
-  {
-    title: 'Position Next to Car',
-    action: 'Align your car parallel to the front obstacle.',
-    goal: 'Correct and repeatable starting position.',
-    visualCue: 'Normal car: align your side mirror with the other car’s side mirror. Larger/smaller obstacle: align the rear of your car with the edge of the obstacle.',
-    steeringTight: 'Straight',
-    steeringEasy: 'Straight',
-    extra: '~0.5 m gap from obstacle',
-    mistake: 'Incorrect alignment or inconsistent distance from the obstacle.',
-    vrp: 'VRP-0 - Starting Alignment: Side mirror aligned with front car’s mirror OR rear aligned with obstacle edge. Meaning: correct starting position achieved.',
-    car: {x: 430, y: 250, angle: 0},
-    signal: true
-  },
-  {
-    title: 'Shift to Reverse',
-    action: 'Engage reverse gear (R).',
-    goal: 'Prepare to start maneuver.',
-    visualCue: 'Reverse gear engaged, surroundings checked.',
-    steeringTight: 'Straight',
-    steeringEasy: 'Straight',
-    extra: 'Gear: R',
-    mistake: 'Rushing without proper checks.',
-    vrp: '',
-    car: {x: 430, y: 250, angle: 0},
-    signal: true
-  },
-  {
-    title: '360° Check',
-    action: 'Check mirrors, blind spots, surroundings.',
-    goal: 'Ensure safety before moving.',
-    visualCue: 'Clear path around vehicle.',
-    steeringTight: 'Straight',
-    steeringEasy: 'Straight',
-    extra: 'Observation only',
-    mistake: 'Skipping full observation.',
-    vrp: '',
-    car: {x: 430, y: 250, angle: 0},
-    signal: true
-  },
-  {
-    title: 'Reverse + Steer Right',
-    action: 'Begin reversing slowly and turn steering wheel right.',
-    goal: 'Angle rear of car into parking space.',
-    visualCue: 'Rear of car moves toward curb.',
-    steeringTight: 'Turn right fully (full lock)',
-    steeringEasy: 'Turn right more gradually',
-    extra: 'Very slow reverse',
-    mistake: 'Turning too early or too sharply.',
-    vrp: 'VRP-1 - End of Right Turn (Angle Set): The middle of the rear car’s number plate becomes visible in your driver-side mirror. If no car: use parking line or curb alignment as substitute. Meaning: correct entry angle reached - prepare to straighten wheels.',
-    car: {x: 350, y: 345, angle: -0.64},
-    signal: true
-  },
-  {
-    title: 'Straight Back',
-    action: 'Straighten wheels and continue reversing straight.',
-    goal: 'Define final distance to the curb.',
-    visualCue: 'In the passenger-side mirror angled downward, align the rear door handle with the curb.',
-    steeringTight: 'Wheels straight',
-    steeringEasy: 'Wheels straight',
-    extra: 'Very slow reverse',
-    mistake: 'Skipping this step; beginning left turn too early.',
-    vrp: 'VRP-2 - Curb Distance Lock: Rear door handle aligns with the curb in the passenger mirror. Meaning: final curb distance is set.',
-    car: {x: 314, y: 468, angle: -0.64},
-    signal: true
-  },
-  {
-    title: 'Turn Left to Parallel',
-    action: 'Turn steering wheel left while reversing.',
-    goal: 'Bring car into parallel alignment.',
-    visualCue: 'Car body aligns parallel; front clears the car ahead.',
-    steeringTight: 'Turn left fully (full lock)',
-    steeringEasy: 'Turn left more gradually',
-    extra: 'Very slow reverse',
-    mistake: 'Turning too late: rear hits curb. Turning too early: wide angle.',
-    vrp: 'VRP-3 - Parallel Alignment: Car body appears parallel to the curb; front clears the car ahead. Meaning: ready to center steering and finalize position.',
-    car: {x: 370, y: 560, angle: -0.18},
-    signal: true
-  },
-  {
-    title: 'Straighten Car',
-    action: 'Center steering as car becomes parallel.',
-    goal: 'Final alignment within the space.',
-    visualCue: 'Car straight, parallel to curb.',
-    steeringTight: 'Center steering',
-    steeringEasy: 'Center steering',
-    extra: 'Slow finishing movement',
-    mistake: 'Over- or under-correcting leading to angle.',
-    vrp: '',
-    car: {x: 405, y: 575, angle: 0.02},
-    signal: true
-  },
-  {
-    title: 'Adjust Position',
-    action: 'Move forward/backward if needed.',
-    goal: 'Center car between front and rear obstacles.',
-    visualCue: 'Balanced spacing front and back.',
-    steeringTight: 'As needed',
-    steeringEasy: 'As needed',
-    extra: 'Small forward/back corrections',
-    mistake: 'Skipping adjustment.',
-    vrp: '',
-    car: {x: 405, y: 545, angle: 0.02},
-    signal: false
-  },
-  {
-    title: 'Finalize',
-    action: 'Shift to park (P), secure vehicle.',
-    goal: 'Complete maneuver.',
-    visualCue: 'Car safely parked.',
-    steeringTight: 'Centered',
-    steeringEasy: 'Centered',
-    extra: 'Gear: P',
-    mistake: 'Forgetting to secure vehicle.',
-    vrp: '',
-    car: {x: 405, y: 545, angle: 0.02},
-    signal: false
-  }
+  { title: 'Indicate', action: 'Turn on right indicator.', goal: 'Signal intent to park.', visualCue: 'Indicator active.', steeringTight: 'Straight', steeringEasy: 'Straight', extra: 'Stationary', mistake: 'Signaling too late or not at all.', vrp: '', car: {x: 500, y: 170, angle: 0}, signal: true },
+  { title: 'Position Next to Car', action: 'Align your car parallel to the front obstacle.', goal: 'Correct and repeatable starting position.', visualCue: 'Normal car: align your side mirror with the other car’s side mirror. Larger/smaller obstacle: align the rear of your car with the edge of the obstacle.', steeringTight: 'Straight', steeringEasy: 'Straight', extra: '~0.5 m gap from obstacle', mistake: 'Incorrect alignment or inconsistent distance from the obstacle.', vrp: 'VRP-0 - Starting Alignment: Side mirror aligned with front car’s mirror OR rear aligned with obstacle edge. Meaning: correct starting position achieved.', car: {x: 500, y: 215, angle: 0}, signal: true },
+  { title: 'Shift to Reverse', action: 'Engage reverse gear (R).', goal: 'Prepare to start maneuver.', visualCue: 'Reverse gear engaged, surroundings checked.', steeringTight: 'Straight', steeringEasy: 'Straight', extra: 'Gear: R', mistake: 'Rushing without proper checks.', vrp: '', car: {x: 500, y: 215, angle: 0}, signal: true },
+  { title: '360° Check', action: 'Check mirrors, blind spots, surroundings.', goal: 'Ensure safety before moving.', visualCue: 'Clear path around vehicle.', steeringTight: 'Straight', steeringEasy: 'Straight', extra: 'Observation only', mistake: 'Skipping full observation.', vrp: '', car: {x: 500, y: 215, angle: 0}, signal: true },
+  { title: 'Reverse + Steer Right', action: 'Begin reversing slowly and turn steering wheel right.', goal: 'Angle rear of car into parking space.', visualCue: 'Rear of car moves toward curb.', steeringTight: 'Turn right fully (full lock)', steeringEasy: 'Turn right more gradually', extra: 'Very slow reverse', mistake: 'Turning too early or too sharply.', vrp: 'VRP-1 - End of Right Turn (Angle Set): The middle of the rear car’s number plate becomes visible in your driver-side mirror. If no car: use parking line or curb alignment as substitute. Meaning: correct entry angle reached - prepare to straighten wheels.', car: {x: 450, y: 315, angle: -0.62}, signal: true },
+  { title: 'Straight Back', action: 'Straighten wheels and continue reversing straight.', goal: 'Define final distance to the curb.', visualCue: 'In the passenger-side mirror angled downward, align the rear door handle with the curb.', steeringTight: 'Wheels straight', steeringEasy: 'Wheels straight', extra: 'Very slow reverse', mistake: 'Skipping this step; beginning left turn too early.', vrp: 'VRP-2 - Curb Distance Lock: Rear door handle aligns with the curb in the passenger mirror. Meaning: final curb distance is set.', car: {x: 385, y: 455, angle: -0.62}, signal: true },
+  { title: 'Turn Left to Parallel', action: 'Turn steering wheel left while reversing.', goal: 'Bring car into parallel alignment.', visualCue: 'Car body aligns parallel; front clears the car ahead.', steeringTight: 'Turn left fully (full lock)', steeringEasy: 'Turn left more gradually', extra: 'Very slow reverse', mistake: 'Turning too late: rear hits curb. Turning too early: wide angle.', vrp: 'VRP-3 - Parallel Alignment: Car body appears parallel to the curb; front clears the car ahead. Meaning: ready to center steering and finalize position.', car: {x: 340, y: finalCenterY, angle: 0.02}, signal: true },
+  { title: 'Straighten Car', action: 'Center steering as car becomes parallel.', goal: 'Final alignment within the space.', visualCue: 'Car straight, parallel to curb.', steeringTight: 'Center steering', steeringEasy: 'Center steering', extra: 'Slow finishing movement', mistake: 'Over- or under-correcting leading to angle.', vrp: '', car: {x: 340, y: finalCenterY, angle: 0.02}, signal: true },
+  { title: 'Adjust Position', action: 'Move forward/backward if needed.', goal: 'Center car between front and rear obstacles.', visualCue: 'Balanced spacing front and back.', steeringTight: 'As needed', steeringEasy: 'As needed', extra: 'Small forward/back corrections', mistake: 'Skipping adjustment.', vrp: '', car: {x: 340, y: finalCenterY, angle: 0.02}, signal: false },
+  { title: 'Finalize', action: 'Shift to park (P), secure vehicle.', goal: 'Complete maneuver.', visualCue: 'Car safely parked.', steeringTight: 'Centered', steeringEasy: 'Centered', extra: 'Gear: P', mistake: 'Forgetting to secure vehicle.', vrp: '', car: {x: 340, y: finalCenterY, angle: 0.02}, signal: false }
 ];
 
 const canvas = document.getElementById('scene');
@@ -320,8 +152,6 @@ let playing = false;
 let timer = null;
 
 const curbX = 210;
-const frontObstacle = {x: 430, y: 110, width: 82, length: 185};
-const rearCar = {x: 430, y: 690, width: 82, length: 185};
 const carGeom = {width: 78, length: 180};
 
 function updateUI() {
@@ -334,12 +164,8 @@ function updateUI() {
   steeringText.textContent = mode === 'tight' ? s.steeringTight : s.steeringEasy;
   extraText.textContent = s.extra;
   mistakeBox.textContent = `Common mistake: ${s.mistake}`;
-  if (s.vrp) {
-    cueBox.style.display = 'block';
-    cueBox.textContent = s.vrp;
-  } else {
-    cueBox.style.display = 'none';
-  }
+  cueBox.style.display = s.vrp ? 'block' : 'none';
+  cueBox.textContent = s.vrp || '';
   bar.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
   prevBtn.disabled = currentStep === 0;
   nextBtn.disabled = currentStep === steps.length - 1;
@@ -381,15 +207,18 @@ function drawRoad() {
 }
 
 function drawSpaceGuides() {
+  const top = parkedFront.y + parkedFront.length / 2;
+  const bottom = parkedRear.y - parkedRear.length / 2;
+  const height = bottom - top;
   ctx.save();
-  ctx.strokeStyle = 'rgba(255,255,255,.18)';
+  ctx.strokeStyle = 'rgba(255,255,255,.22)';
   ctx.lineWidth = 2;
   ctx.setLineDash([10,10]);
-  ctx.strokeRect(250, 220, 180, 380);
+  ctx.strokeRect(260, top, 160, height);
   ctx.setLineDash([]);
-  ctx.fillStyle = 'rgba(255,255,255,.7)';
+  ctx.fillStyle = 'rgba(255,255,255,.72)';
   ctx.font = '15px sans-serif';
-  ctx.fillText('Target parking space', 255, 212);
+  ctx.fillText('Target parking space', 265, top - 10);
   ctx.restore();
 }
 
@@ -431,12 +260,8 @@ function drawOurCar(car, signalOn) {
   [[-carGeom.width/2 - 2, -52],[carGeom.width/2 - 8, -52],[-carGeom.width/2 - 2, 24],[carGeom.width/2 - 8, 24]].forEach(([x,y]) => ctx.fillRect(x,y,10,28));
   if (signalOn) {
     ctx.fillStyle = '#f59e0b';
-    ctx.beginPath();
-    ctx.arc(carGeom.width/2 - 6, -carGeom.length/2 + 14, 6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(carGeom.width/2 - 6, carGeom.length/2 - 14, 6, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(carGeom.width/2 - 6, -carGeom.length/2 + 14, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(carGeom.width/2 - 6, carGeom.length/2 - 14, 6, 0, Math.PI * 2); ctx.fill();
   }
   ctx.restore();
 }
@@ -457,28 +282,21 @@ function drawVRP() {
   ctx.strokeStyle = '#f59e0b';
   ctx.fillStyle = 'rgba(245,158,11,.16)';
   ctx.lineWidth = 4;
-
   if (currentStep === 1) {
-    ctx.strokeRect(470, 155, 120, 44);
-    label('VRP-0: starting alignment', 610, 180);
+    ctx.strokeRect(460, 160, 120, 44);
+    label('VRP-0: starting alignment', 600, 185);
   }
   if (currentStep === 4) {
-    ctx.beginPath();
-    ctx.arc(430, 610, 34, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    label('VRP-1: middle of rear number plate in driver mirror', 585, 610);
+    ctx.beginPath(); ctx.arc(370, 600, 34, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    label('VRP-1: middle of rear number plate in driver mirror', 560, 600);
   }
   if (currentStep === 5) {
-    ctx.beginPath();
-    ctx.moveTo(212, 470);
-    ctx.lineTo(302, 470);
-    ctx.stroke();
-    label('VRP-2: rear door handle aligned with curb', 585, 470);
+    ctx.beginPath(); ctx.moveTo(212, 470); ctx.lineTo(300, 470); ctx.stroke();
+    label('VRP-2: rear door handle aligned with curb', 560, 470);
   }
   if (currentStep === 6) {
-    ctx.strokeRect(248, 500, 330, 145);
-    label('VRP-3: body parallel, front clears car ahead', 585, 520);
+    ctx.strokeRect(250, 275, 200, 260);
+    label('VRP-3: final car centered in the gap', 560, 300);
   }
   ctx.restore();
 }
@@ -487,19 +305,14 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawRoad();
   drawSpaceGuides();
-  drawParked(frontObstacle);
-  drawParked(rearCar);
+  drawParked(parkedFront);
+  drawParked(parkedRear);
   drawPath();
   drawOurCar(steps[currentStep].car, steps[currentStep].signal);
   drawVRP();
 }
 
-function stopPlay() {
-  playing = false;
-  clearInterval(timer);
-  timer = null;
-  playBtn.textContent = 'Play';
-}
+function stopPlay() { playing = false; clearInterval(timer); timer = null; playBtn.textContent = 'Play'; }
 function playToggle() {
   if (playing) return stopPlay();
   playing = true;
@@ -516,7 +329,6 @@ resetBtn.addEventListener('click', () => { stopPlay(); currentStep = 0; updateUI
 playBtn.addEventListener('click', playToggle);
 tightBtn.addEventListener('click', () => { mode = 'tight'; tightBtn.classList.add('active'); easyBtn.classList.remove('active'); tightBtn.classList.remove('secondary'); easyBtn.classList.add('secondary'); updateUI(); });
 easyBtn.addEventListener('click', () => { mode = 'easy'; easyBtn.classList.add('active'); tightBtn.classList.remove('active'); easyBtn.classList.remove('secondary'); tightBtn.classList.add('secondary'); updateUI(); });
-
 updateUI();
 </script>
 </body>
